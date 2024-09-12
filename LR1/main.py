@@ -1,29 +1,28 @@
 import cv2
 def opencv(input):
-    # Разные флаги для чтения изображения
     img_color = cv2.imread(input, cv2.IMREAD_COLOR)
     img_gray = cv2.imread(input, cv2.IMREAD_GRAYSCALE)
     img_unchanged = cv2.imread(input, cv2.IMREAD_UNCHANGED)
 
-    # Разные флаги для создания окна
-    cv2.namedWindow('Color Image', cv2.WINDOW_NORMAL)
-    cv2.namedWindow('Gray Image', cv2.WINDOW_AUTOSIZE)
-    cv2.namedWindow('Unchanged Image', cv2.WINDOW_FULLSCREEN)
+    cv2.namedWindow('color', cv2.WINDOW_NORMAL)
+    cv2.namedWindow('gray', cv2.WINDOW_AUTOSIZE)
+    cv2.namedWindow('unchanged', cv2.WINDOW_FULLSCREEN)
 
-    cv2.imshow('Color Image', img_color)
-    cv2.imshow('Gray Image', img_gray)
-    cv2.imshow('Unchanged Image', img_unchanged)
+    cv2.imshow('color', img_color)
+    cv2.imshow('gray', img_gray)
+    cv2.imshow('unchanged', img_unchanged)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 def video(input):
     video = cv2.VideoCapture(input)
-    ok, img = video.read()
     w = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
     while True:
         ok, img = video.read()
+        if not ok:
+            break
         # Изменение размера видео на норму
         cv2.namedWindow('norma', cv2.WINDOW_NORMAL)
         # Из BRGA (blue, green, red, alpha) в RGBA (red, green, blue, alpha)
@@ -50,15 +49,13 @@ def convert_video(input, output):
     w = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
     # Определение кодека и создание объекта VideoWriter
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')  # Используйте 'XVID' кодек
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')  #XVID кодек
     video_write = cv2.VideoWriter(output, fourcc, 25, (w, h))
-
     while True:
         ok, img = video.read()
         if not ok:
             break
         video_write.write(img)
-
     video.release()
     video_write.release()
     cv2.destroyAllWindows()
@@ -72,20 +69,17 @@ def hsv_convert(input):
     cv2.destroyAllWindows()
 
 def red_cross():
-    # Открытие камеры
     video = cv2.VideoCapture(0)
     while True:
         ok, img = video.read()
-
-        height, width, _ = img.shape
-        center_x, center_y = width // 2, height // 2
-        center_xx, center_yy = width // 2, height // 3
+        h, w, _ = img.shape
+        center_x, center_y = w // 2, h // 2
+        center_xx, center_yy = w // 2, h // 3
         cross_size = 70
         cv2.rectangle(img, (center_x - cross_size, center_y - 10), (center_x + cross_size, center_y + 10), (0, 0, 255), 2)
         cv2.rectangle(img, (center_xx - 10, center_yy), (center_xx + 10, center_yy + cross_size), (0, 0, 255), 2)
         cv2.rectangle(img, (center_xx - 10, center_y + 10), (center_xx + 10, center_y + 80), (0, 0, 255), 2)
-
-        cv2.imshow('Camera Feed', img)
+        cv2.imshow('camera', img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     video.release()
@@ -93,7 +87,6 @@ def red_cross():
 
 def recording_video():
     video = cv2.VideoCapture(0)
-    ok, img = video.read()
     w = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
@@ -111,9 +104,9 @@ def full_cross():
     video = cv2.VideoCapture(0)
     while True:
         ok, img = video.read()
-        height, width, _ = img.shape
-        center_x, center_y = width // 2, height // 2
-        center_xx, center_yy = width // 2, height // 3
+        h, w, _ = img.shape
+        center_x, center_y = w // 2, h // 2
+        center_xx, center_yy = w // 2, h // 3
         center_pixel = img[center_y, center_x]
 
         # Красный
@@ -123,14 +116,13 @@ def full_cross():
         elif center_pixel[1] > center_pixel[2] and center_pixel[1] > center_pixel[0]:
             color = (0, 255, 0)
         # Синий
-        else:  # Синий
+        else:
             color = (255, 0, 0)
 
         cross_size = 70
         cv2.rectangle(img, (center_x - cross_size, center_y - 10), (center_x + cross_size, center_y + 10), color, -1)
         cv2.rectangle(img, (center_xx - 10, center_yy), (center_xx + 10, center_yy + cross_size), color, -1)
         cv2.rectangle(img, (center_xx - 10, center_y + 10), (center_xx + 10, center_y + 80), color, -1)
-
         cv2.imshow('camera', img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -138,23 +130,21 @@ def full_cross():
     cv2.destroyAllWindows()
 
 def camera_iphone():
-    # Формат URL для захвата видео
     video = cv2.VideoCapture(1)
     while True:
         ret, frame = video.read()
-        cv2.imshow('iPhone Camera', frame)
+        cv2.imshow('camera', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
     video.release()
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    opencv('photo_2023-11-23_02-28-57.jpg')
-    video('toad.mp4')
-    convert_video('toad.mp4','toad.avi')
-    hsv_convert('IMG_6192.png')
-    red_cross()
-    recording_video()
-    full_cross()
+    #opencv('photo_2023-11-23_02-28-57.jpg')
+    #video('toad.mp4')
+    #convert_video('toad.mp4','toad.avi')
+    #hsv_convert('IMG_6192.png')
+    #red_cross()
+    #recording_video()
+    #full_cross()
     camera_iphone()
