@@ -71,7 +71,7 @@ def get_moments():
         mask = cv2.inRange(hsv_record, min_red, max_red)
         # Вычисление момента на основе маски
         moments = cv2.moments(mask, True)
-        # Поиск момента первого порядка
+        # Поиск момента первого порядка (площадь)
         area = moments['m00']
         # Отображение площади на изображении
         cv2.putText(frame, f'Area: {int(area)}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
@@ -94,17 +94,21 @@ def black_rectangle():
         hsv_record = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsv_record, min_red, max_red)
         moments = cv2.moments(mask, True)
+        # Поиск первого момента по оси y
         dM01 = moments['m01']
+        # Поиск первого момента по оси x
         dM10 = moments['m10']
         area = moments['m00']
-        if area > 10000:
+        # Проверка, достаточно ли велика площадь для рисования прямоугольника
+        if area > 5000:
+            # Вычисление координат центра масс
             x = int(dM10 / area)
             y = int(dM01 / area)
             width = height = int(np.sqrt(area))
             top_left = (x - width, y - height)
             bottom_right = (x + width, y + height)
             cv2.rectangle(frame, top_left, bottom_right, (0,0,0), 4)
-        cv2.putText(frame, f'Area: {int(area)}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        cv2.putText(frame, f'Area: {int(area)}', (10, 30), cv2.FONT_ITALIC, 1, (255, 255, 255), 2)
         cv2.imshow('HSV_frame', hsv_record)
         cv2.imshow('Result_frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):

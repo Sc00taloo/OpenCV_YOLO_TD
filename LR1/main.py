@@ -1,17 +1,22 @@
 import cv2
 def opencv(input):
+    # Чтение цветного изображения
     img_color = cv2.imread(input, cv2.IMREAD_COLOR)
+    # Чтение изображения в градациях серого
     img_gray = cv2.imread(input, cv2.IMREAD_GRAYSCALE)
+    # Чтение изображения без изменений
     img_unchanged = cv2.imread(input, cv2.IMREAD_UNCHANGED)
-
+    # Создание окна для цветного изображения
     cv2.namedWindow('color', cv2.WINDOW_NORMAL)
+    # Создание окна для серого изображения с автоматическим размером
     cv2.namedWindow('gray', cv2.WINDOW_AUTOSIZE)
+    # Создание полноэкранного окна для неизмененного изображения
     cv2.namedWindow('unchanged', cv2.WINDOW_FULLSCREEN)
 
     cv2.imshow('color', img_color)
     cv2.imshow('gray', img_gray)
     cv2.imshow('unchanged', img_unchanged)
-
+    # Ожидание нажатия клавиши
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -20,6 +25,7 @@ def video(input):
     w = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
     while True:
+        # Чтение кадра из видео
         ok, img = video.read()
         if not ok:
             break
@@ -49,7 +55,7 @@ def convert_video(input, output):
     w = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
     # Определение кодека и создание объекта VideoWriter
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')  #XVID кодек
+    fourcc = cv2.VideoWriter_fourcc(*'')  #XVID кодек
     video_write = cv2.VideoWriter(output, fourcc, 25, (w, h))
     while True:
         ok, img = video.read()
@@ -62,6 +68,7 @@ def convert_video(input, output):
 
 def hsv_convert(input):
     img = cv2.imread(input)
+    # Преобразование изображения в формат HSV
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     cv2.imshow('original', img)
     cv2.imshow('HSV', img_hsv)
@@ -72,6 +79,7 @@ def red_cross():
     video = cv2.VideoCapture(0)
     while True:
         ok, img = video.read()
+        # Возвращает кортеж в формате (высота, ширина, количество каналов)
         h, w, _ = img.shape
         center_x, center_y = w // 2, h // 2
         center_xx, center_yy = w // 2, h // 3
@@ -107,6 +115,7 @@ def full_cross():
         h, w, _ = img.shape
         center_x, center_y = w // 2, h // 2
         center_xx, center_yy = w // 2, h // 3
+        # Будет содержать значение цвета пикселя в координатах x и y
         center_pixel = img[center_y, center_x]
 
         # Красный
@@ -143,9 +152,9 @@ def camera_iphone():
 if __name__ == '__main__':
     #opencv('photo_2023-11-23_02-28-57.jpg')
     #video('toad.mp4')
-    #convert_video('toad.mp4','toad.avi')
+    convert_video('toad.mp4','toad.avi')
     #hsv_convert('IMG_6192.png')
     #red_cross()
     #recording_video()
     #full_cross()
-    camera_iphone()
+    #camera_iphone()
