@@ -130,13 +130,14 @@ def full_cross():
     cv2.destroyAllWindows()
 
 def camera_iphone():
-    video = cv2.VideoCapture(1)
+    video1 = cv2.VideoCapture("https://10.207.76.77:8080/video")
+    #video = cv2.VideoCapture(1)
     while True:
-        ret, frame = video.read()
+        ret, frame = video1.read()
         cv2.imshow('camera', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-    video.release()
+    video1.release()
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
