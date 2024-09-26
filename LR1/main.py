@@ -21,6 +21,7 @@ def opencv(input):
     cv2.destroyAllWindows()
 
 def video(input):
+    # Производим захват видео
     video = cv2.VideoCapture(input)
     w = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -55,7 +56,7 @@ def convert_video(input, output):
     w = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
     # Определение кодека и создание объекта VideoWriter
-    fourcc = cv2.VideoWriter_fourcc(*'')  #XVID кодек
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')  #XVID кодек
     video_write = cv2.VideoWriter(output, fourcc, 25, (w, h))
     while True:
         ok, img = video.read()
@@ -82,11 +83,29 @@ def red_cross():
         # Возвращает кортеж в формате (высота, ширина, количество каналов)
         h, w, _ = img.shape
         center_x, center_y = w // 2, h // 2
-        center_xx, center_yy = w // 2, h // 3
         cross_size = 70
-        cv2.rectangle(img, (center_x - cross_size, center_y - 10), (center_x + cross_size, center_y + 10), (0, 0, 255), 2)
-        cv2.rectangle(img, (center_xx - 10, center_yy), (center_xx + 10, center_yy + cross_size), (0, 0, 255), 2)
-        cv2.rectangle(img, (center_xx - 10, center_y + 10), (center_xx + 10, center_y + 80), (0, 0, 255), 2)
+        cv2.circle(img, (center_x, center_y), cross_size, (0, 0, 255), 2)
+
+        start_point = (center_x-65, center_y-25)  # Начальная точка (x, y)
+        end_point = (center_x+65, center_y-25)  # Конечная точка (x, y)
+        cv2.line(img, start_point, end_point,(0, 0, 255), 2)
+
+        start_point2 = (center_x+65, center_y-25)  # Начальная точка (x, y)
+        end_point2 = (center_x-45, center_y+55)  # Конечная точка (x, y)
+        cv2.line(img, start_point2, end_point2, (0, 0, 255), 2)
+
+        start_point3 = (center_x-45, center_y+55)  # Начальная точка (x, y)
+        end_point3 = (center_x, center_y-70)  # Конечная точка (x, y)
+        cv2.line(img, start_point3, end_point3, (0, 0, 255), 2)
+
+        start_point4 = (center_x, center_y-70)  # Начальная точка (x, y)
+        end_point4 = (center_x+45, center_y+55)  # Конечная точка (x, y)
+        cv2.line(img, start_point4, end_point4, (0, 0, 255), 2)
+
+        start_point5 = (center_x+45, center_y+55)  # Начальная точка (x, y)
+        end_point5 = (center_x-65, center_y-25)  # Конечная точка (x, y)
+        cv2.line(img, start_point5, end_point5, (0, 0, 255), 2)
+
         cv2.imshow('camera', img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -114,7 +133,6 @@ def full_cross():
         ok, img = video.read()
         h, w, _ = img.shape
         center_x, center_y = w // 2, h // 2
-        center_xx, center_yy = w // 2, h // 3
         # Будет содержать значение цвета пикселя в координатах x и y
         center_pixel = img[center_y, center_x]
 
@@ -129,9 +147,27 @@ def full_cross():
             color = (255, 0, 0)
 
         cross_size = 70
-        cv2.rectangle(img, (center_x - cross_size, center_y - 10), (center_x + cross_size, center_y + 10), color, -1)
-        cv2.rectangle(img, (center_xx - 10, center_yy), (center_xx + 10, center_yy + cross_size), color, -1)
-        cv2.rectangle(img, (center_xx - 10, center_y + 10), (center_xx + 10, center_y + 80), color, -1)
+        cv2.circle(img, (center_x, center_y), cross_size, (0, 0, 255), 2)
+
+        start_point = (center_x-65, center_y-25)  # Начальная точка (x, y)
+        end_point = (center_x+65, center_y-25)  # Конечная точка (x, y)
+        cv2.line(img, start_point, end_point,color, 2)
+
+        start_point2 = (center_x+65, center_y-25)  # Начальная точка (x, y)
+        end_point2 = (center_x-45, center_y+55)  # Конечная точка (x, y)
+        cv2.line(img, start_point2, end_point2, color, 2)
+
+        start_point3 = (center_x-45, center_y+55)  # Начальная точка (x, y)
+        end_point3 = (center_x, center_y-70)  # Конечная точка (x, y)
+        cv2.line(img, start_point3, end_point3, color, 2)
+
+        start_point4 = (center_x, center_y-70)  # Начальная точка (x, y)
+        end_point4 = (center_x+45, center_y+55)  # Конечная точка (x, y)
+        cv2.line(img, start_point4, end_point4, color, 2)
+
+        start_point5 = (center_x+45, center_y+55)  # Начальная точка (x, y)
+        end_point5 = (center_x-65, center_y-25)  # Конечная точка (x, y)
+        cv2.line(img, start_point5, end_point5, color, 2)
         cv2.imshow('camera', img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -139,7 +175,7 @@ def full_cross():
     cv2.destroyAllWindows()
 
 def camera_iphone():
-    video1 = cv2.VideoCapture("https://10.207.76.77:8080/video")
+    video1 = cv2.VideoCapture("https://192.168.43.159:8080/video")
     #video = cv2.VideoCapture(1)
     while True:
         ret, frame = video1.read()
@@ -152,9 +188,9 @@ def camera_iphone():
 if __name__ == '__main__':
     #opencv('photo_2023-11-23_02-28-57.jpg')
     #video('toad.mp4')
-    convert_video('toad.mp4','toad.avi')
+    #convert_video('toad.mp4','toad.avi')
     #hsv_convert('IMG_6192.png')
     #red_cross()
     #recording_video()
-    #full_cross()
+    full_cross()
     #camera_iphone()
