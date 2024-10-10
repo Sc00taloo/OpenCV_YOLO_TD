@@ -38,6 +38,10 @@ def filter_inRange():
 def morphological_transformation():
     record = cv2.VideoCapture(0)
     # Определяем структурный элемент для морфологических операций (определяет размер и форму области)
+    # Ядро - это матрица, которая применяется к каждому пикселю изображения для вычисления нового
+    # значения пикселя на основе значений соседних пикселей.
+    # np.uint8 - это тип данных, который будет использоваться для хранения элементов массива.
+    # uint8 есть целые числа без знака, занимающие 8 бит (от 0 до 255).
     kernel = np.ones((5, 5), np.uint8)
     min_red = np.array([0, 100, 0])
     max_red = np.array([255, 255, 255])
@@ -47,7 +51,7 @@ def morphological_transformation():
             break
         hsv_record = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsv_record, min_red, max_red)
-        # Операция открытие - позволяет удалить шумы и мелкие объекты на изображении(удаление нежелательных пикселей или деталей)
+        # Операция открытие - позволяет удалить шумы и мелкие объекты на изображении
         opening = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
         # Операция закрытие - позволяет заполнить маленькие пробелы и разрывы в объектах на изображении
         closing = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
@@ -87,7 +91,7 @@ def nothing(*arg):
         pass
 def black_rectangle():
     record = cv2.VideoCapture(0)
-    min_red = np.array([0, 127, 127])
+    min_red = np.array([114, 102, 77])
     max_red = np.array([255, 255, 255])
 
     # cv2.namedWindow("settings")  # создаем окно настроек
@@ -110,7 +114,7 @@ def black_rectangle():
         # h2 = cv2.getTrackbarPos('h2', 'settings')
         # s2 = cv2.getTrackbarPos('s2', 'settings')
         # v2 = cv2.getTrackbarPos('v2', 'settings')
-        #
+
         # min_red = np.array([h1, s1, v1])
         # max_red = np.array([h2, s2, v2])
 
@@ -129,10 +133,10 @@ def black_rectangle():
             y = int(dM01 / area)
             w = h = int(np.sqrt(area))
             center_x, center_y = x + w, y + h
-            cross_size = 240
+            cross_size = 360
             top_left = (x - w, y - h)
             bottom_right = (x + w, y + h)
-            cv2.circle(frame, (x, y), cross_size+h, (0, 0, 0), 500)
+            cv2.circle(frame, (x, y), cross_size+h, (0, 0, 0), 800)
             start_point = (x, y+h+70)  # Начальная точка (x, y)
             end_point = (x, y-h-70)  # Конечная точка (x, y)
             cv2.line(frame, start_point, end_point, (0, 0, 0), 4)

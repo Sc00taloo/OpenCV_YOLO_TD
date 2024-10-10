@@ -1,3 +1,5 @@
+import math
+
 import cv2
 def opencv(input):
     # Чтение цветного изображения
@@ -84,27 +86,51 @@ def red_cross():
         h, w, _ = img.shape
         center_x, center_y = w // 2, h // 2
         cross_size = 70
-        cv2.circle(img, (center_x, center_y), cross_size, (0, 0, 255), 2)
 
-        start_point = (center_x-65, center_y-25)  # Начальная точка (x, y)
-        end_point = (center_x+65, center_y-25)  # Конечная точка (x, y)
-        cv2.line(img, start_point, end_point,(0, 0, 255), 2)
+        top_left1 = (center_x+140, center_y+80)
+        bottom_right1 = (center_x-140, center_y-80)
+        cv2.rectangle(img, top_left1, bottom_right1, (255, 255, 255), -1)
 
-        start_point2 = (center_x+65, center_y-25)  # Начальная точка (x, y)
-        end_point2 = (center_x-45, center_y+55)  # Конечная точка (x, y)
-        cv2.line(img, start_point2, end_point2, (0, 0, 255), 2)
+        top_left = (center_x+140, center_y+40)
+        bottom_right = (center_x-140, center_y+70)
+        cv2.rectangle(img, top_left, bottom_right, (255,0,0), -1)
 
-        start_point3 = (center_x-45, center_y+55)  # Начальная точка (x, y)
-        end_point3 = (center_x, center_y-70)  # Конечная точка (x, y)
-        cv2.line(img, start_point3, end_point3, (0, 0, 255), 2)
+        top_left2 = (center_x+140, center_y-40)
+        bottom_right2 = (center_x-140, center_y-70)
+        cv2.rectangle(img, top_left2, bottom_right2, (255, 0, 0), -1)
 
-        start_point4 = (center_x, center_y-70)  # Начальная точка (x, y)
-        end_point4 = (center_x+45, center_y+55)  # Конечная точка (x, y)
-        cv2.line(img, start_point4, end_point4, (0, 0, 255), 2)
+        T = int(0.06875*center_x)
+        D = center_y - 8 * T
+        n = 6
+        agle = -90
+        vertical = []
+        for i in range(n):
+            x = int(center_x + D//2 * math.cos(math.radians(agle + (i * 360) / n)))
+            y = int(center_y + D // 2 * math.sin(math.radians(agle + (i * 360) / n)))
+            vertical.append((x,y))
+        for i in range(n):
+            cv2.line(img, vertical[i], vertical[(i+2) % n], (255,0,0), 2)
+       #cv2.circle(img, (center_x, center_y), cross_size, (0, 0, 255), 2)
 
-        start_point5 = (center_x+45, center_y+55)  # Начальная точка (x, y)
-        end_point5 = (center_x-65, center_y-25)  # Конечная точка (x, y)
-        cv2.line(img, start_point5, end_point5, (0, 0, 255), 2)
+        # start_point = (center_x-65, center_y-25)  # Начальная точка (x, y)
+        # end_point = (center_x+65, center_y-25)  # Конечная точка (x, y)
+        # cv2.line(img, start_point, end_point,(0, 0, 255), 2)
+        #
+        # start_point2 = (center_x+65, center_y-25)  # Начальная точка (x, y)
+        # end_point2 = (center_x-45, center_y+55)  # Конечная точка (x, y)
+        # cv2.line(img, start_point2, end_point2, (0, 0, 255), 2)
+        #
+        # start_point3 = (center_x-45, center_y+55)  # Начальная точка (x, y)
+        # end_point3 = (center_x, center_y-70)  # Конечная точка (x, y)
+        # cv2.line(img, start_point3, end_point3, (0, 0, 255), 2)
+        #
+        # start_point4 = (center_x, center_y-70)  # Начальная точка (x, y)
+        # end_point4 = (center_x+45, center_y+55)  # Конечная точка (x, y)
+        # cv2.line(img, start_point4, end_point4, (0, 0, 255), 2)
+        #
+        # start_point5 = (center_x+45, center_y+55)  # Начальная точка (x, y)
+        # end_point5 = (center_x-65, center_y-25)  # Конечная точка (x, y)
+        # cv2.line(img, start_point5, end_point5, (0, 0, 255), 2)
 
         cv2.imshow('camera', img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -175,7 +201,7 @@ def full_cross():
     cv2.destroyAllWindows()
 
 def camera_iphone():
-    video1 = cv2.VideoCapture("https://192.168.43.159:8080/video")
+    video1 = cv2.VideoCapture("https://192.168.43.63:8080/video")
     #video = cv2.VideoCapture(1)
     while True:
         ret, frame = video1.read()
@@ -190,7 +216,7 @@ if __name__ == '__main__':
     #video('toad.mp4')
     #convert_video('toad.mp4','toad.avi')
     #hsv_convert('IMG_6192.png')
-    #red_cross()
+    red_cross()
     #recording_video()
-    full_cross()
+    #full_cross()
     #camera_iphone()
