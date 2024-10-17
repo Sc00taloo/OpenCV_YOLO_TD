@@ -1,15 +1,16 @@
 import tkinter as tk
-from CSRT import csrt_tracking
-from MedianFlow import medianFlow_tracking
-from MOSSE import mosse_tracking
+from Tracking import tracking
 from Summary_table import sumTable
 
 def run_csrt():
-    csrt_tracking()
+    method = "CSRT"
+    tracking(method)
 def run_medianflow():
-    medianFlow_tracking()
+    method = "MedianFlow"
+    tracking(method)
 def run_mosse():
-    mosse_tracking()
+    method = "MOSSE"
+    tracking(method)
 def sum_table():
     sumTable()
 
