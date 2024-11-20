@@ -11,6 +11,11 @@ def run_medianflow():
 def run_mosse():
     method = "MOSSE"
     tracking(method)
+
+def run_my_mosse():
+    method = "My_MOSSE"
+    tracking(method)
+
 def sum_table():
     sumTable()
 
@@ -27,8 +32,11 @@ def create_menu():
     button_csrt = tk.Button(root, text="CSRT", command=run_csrt)
     button_csrt.pack(pady=10)
 
-    button_csrt = tk.Button(root, text="Summary Table", command=sum_table)
-    button_csrt.pack(pady=10)
+    button_mosse_my = tk.Button(root, text="My MOSSE", command=run_my_mosse)
+    button_mosse_my.pack(pady=10)
+
+    button_table = tk.Button(root, text="Summary Table", command=sum_table)
+    button_table.pack(pady=10)
 
     root.mainloop()
 
