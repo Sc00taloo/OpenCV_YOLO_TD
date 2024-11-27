@@ -35,8 +35,8 @@ def create_menu():
     button_mosse_my = tk.Button(root, text="My MOSSE", command=run_my_mosse)
     button_mosse_my.pack(pady=10)
 
-    button_table = tk.Button(root, text="Summary Table", command=sum_table)
-    button_table.pack(pady=10)
+    # button_table = tk.Button(root, text="Summary Table", command=sum_table)
+    # button_table.pack(pady=10)
 
     root.mainloop()
 

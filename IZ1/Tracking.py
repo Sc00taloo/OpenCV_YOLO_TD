@@ -61,14 +61,14 @@ def trac(video_path, method):
             end_time = time.time()
             total_time = end_time - start_time
 
-            lost_percentage = (lost_count / frame_count) * 100 if frame_count > 0 else 0
-            print(f"Частота потери изображения: {lost_percentage:.2f}%")
-            lost_percentage_median.append(f"{lost_percentage:.2f}")
-            print(f"Время работы метода: {total_time:.3f} секунд")
-            total_time_median.append(f"{total_time:.3f}")
-            recovery_rate = (recovery_count / lost_count) * 100 if lost_count > 0 else 0
-            recovery_rate_median.append(f"{recovery_rate:.2f}")
-            print(f"Частота восстановления: {recovery_rate:.2f}%")
+            # lost_percentage = (lost_count / frame_count) * 100 if frame_count > 0 else 0
+            # print(f"Частота потери изображения: {lost_percentage:.2f}%")
+            # lost_percentage_median.append(f"{lost_percentage:.2f}")
+            # print(f"Время работы метода: {total_time:.3f} секунд")
+            # total_time_median.append(f"{total_time:.3f}")
+            # recovery_rate = (recovery_count / lost_count) * 100 if lost_count > 0 else 0
+            # recovery_rate_median.append(f"{recovery_rate:.2f}")
+            # print(f"Частота восстановления: {recovery_rate:.2f}%")
 
             cap.release()
             result_video.release()
@@ -124,33 +124,33 @@ def trac(video_path, method):
             total_time = end_time - start_time
 
             # Вычисляем параметры
-            if method == 'MOSSE':
-                lost_percentage = (lost_count / frame_count) * 100 if frame_count > 0 else 0
-                print(f"Частота потери изображения: {lost_percentage:.2f}%")
-                lost_percentage_mosse.append(f"{lost_percentage:.2f}")
-                print(f"Время работы метода: {total_time:.3f} секунд")
-                total_time_mosse.append(f"{total_time:.3f}")
-                recovery_rate = (recovery_count / lost_count) * 100 if lost_count > 0 else 0
-                recovery_rate_mosse.append(f"{recovery_rate:.2f}")
-                print(f"Частота восстановления: {recovery_rate:.2f}%")
-            elif method == 'CSRT':
-                lost_percentage = (lost_count / frame_count) * 100 if frame_count > 0 else 0
-                print(f"Частота потери изображения: {lost_percentage:.2f}%")
-                lost_percentage_csrt.append(f"{lost_percentage:.2f}")
-                print(f"Время работы метода: {total_time:.3f} секунд")
-                total_time_crst.append(f"{total_time:.3f}")
-                recovery_rate = (recovery_count / lost_count) * 100 if lost_count > 0 else 0
-                recovery_rate_crst.append(f"{recovery_rate:.2f}")
-                print(f"Частота восстановления: {recovery_rate:.2f}%")
-            else:
-                lost_percentage = (lost_count / frame_count) * 100 if frame_count > 0 else 0
-                print(f"Частота потери изображения: {lost_percentage:.2f}%")
-                lost_percentage_median.append(f"{lost_percentage:.2f}")
-                print(f"Время работы метода: {total_time:.3f} секунд")
-                total_time_median.append(f"{total_time:.3f}")
-                recovery_rate = (recovery_count / lost_count) * 100 if lost_count > 0 else 0
-                recovery_rate_median.append(f"{recovery_rate:.2f}")
-                print(f"Частота восстановления: {recovery_rate:.2f}%")
+            # if method == 'MOSSE':
+            #     lost_percentage = (lost_count / frame_count) * 100 if frame_count > 0 else 0
+            #     print(f"Частота потери изображения: {lost_percentage:.2f}%")
+            #     lost_percentage_mosse.append(f"{lost_percentage:.2f}")
+            #     print(f"Время работы метода: {total_time:.3f} секунд")
+            #     total_time_mosse.append(f"{total_time:.3f}")
+            #     recovery_rate = (recovery_count / lost_count) * 100 if lost_count > 0 else 0
+            #     recovery_rate_mosse.append(f"{recovery_rate:.2f}")
+            #     print(f"Частота восстановления: {recovery_rate:.2f}%")
+            # elif method == 'CSRT':
+            #     lost_percentage = (lost_count / frame_count) * 100 if frame_count > 0 else 0
+            #     print(f"Частота потери изображения: {lost_percentage:.2f}%")
+            #     lost_percentage_csrt.append(f"{lost_percentage:.2f}")
+            #     print(f"Время работы метода: {total_time:.3f} секунд")
+            #     total_time_crst.append(f"{total_time:.3f}")
+            #     recovery_rate = (recovery_count / lost_count) * 100 if lost_count > 0 else 0
+            #     recovery_rate_crst.append(f"{recovery_rate:.2f}")
+            #     print(f"Частота восстановления: {recovery_rate:.2f}%")
+            # else:
+            #     lost_percentage = (lost_count / frame_count) * 100 if frame_count > 0 else 0
+            #     print(f"Частота потери изображения: {lost_percentage:.2f}%")
+            #     lost_percentage_median.append(f"{lost_percentage:.2f}")
+            #     print(f"Время работы метода: {total_time:.3f} секунд")
+            #     total_time_median.append(f"{total_time:.3f}")
+            #     recovery_rate = (recovery_count / lost_count) * 100 if lost_count > 0 else 0
+            #     recovery_rate_median.append(f"{recovery_rate:.2f}")
+            #     print(f"Частота восстановления: {recovery_rate:.2f}%")
 
             # Освобождаем ресурсы
             cap.release()
@@ -158,6 +158,6 @@ def trac(video_path, method):
             cv2.destroyAllWindows()
 
 def tracking(method):
-    video_paths = ['Car1.mp4', 'Car2.mp4', 'Car3.mp4', 'Car4.mp4', 'Car5.mp4']
+    video_paths = ['Car1.mp4', 'Car2.mp4','Car3.mp4','Car4.mp4', 'Car5.mp4']
     for video in video_paths:
         trac(video, method)
