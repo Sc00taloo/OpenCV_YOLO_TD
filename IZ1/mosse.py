@@ -1,6 +1,7 @@
 from copy import copy
 import cv2
 import numpy as np
+from furrye import dft, fourier
 
 class BoundingBox:
     # x: Координата центра по x
@@ -81,10 +82,10 @@ class MosseResult:
         # Вычисляем сам фильтр как отношение A и B
         self.filter = A / B
         # Применяем фильтр к изображению
-        G = self.filter * np.fft.fft2(frame_tru)
+        G = self.filter * fourier(frame_tru)
         # Нормализуем фильтр и отклик в пространственной области
-        self.filter = np.abs(normalize(np.fft.ifft2(self.filter)))
-        self.output = np.abs(normalize(np.fft.ifft2(G)))
+        self.filter = np.abs(normalize(dft(self.filter)))
+        self.output = np.abs(normalize(dft(G)))
 
 def gaus(height: int, width: int, center_x: int, center_y: int, sigma: float = 10.0):
     xs, ys = np.meshgrid(np.arange(width), np.arange(height))  # Сетка координат
@@ -100,7 +101,7 @@ def log_transform(image):
     return np.log(image + 1)
 
 def normalize_image(image):
-    return (image - image.mean()) / (image.std() + 1e-5)
+    return (image - image.mean()) / (image.std() + 0.00001)
 
 # Применение окна Ханнинга для уменьшения краевых эффектов
 def hanning_window(image):
@@ -112,8 +113,8 @@ def hanning_window(image):
 # Предобработка изображения
 def preprocess(image):
     image = log_transform(image)
-    image = normalize_image(image)
-    image = hanning_window(image)
+    #image = normalize_image(image)
+    #image = hanning_window(image)
     return image
 
 # bbox: прямоугольник
@@ -171,11 +172,11 @@ class Mosse:
         # Преобразуем отклик и изображение в частотную область
         # np.fft.fft2: вычисляет двумерное дискретное преобразование Фурье
         # G: дискретное преобразование Фурье для гаусоввого отлика
-        G = np.fft.fft2(g)
+        G = fourier(g)
         # Предобработка изображения
         f = preprocess(f)
         # F: дискретное преобразование Фурье для изображения
-        F = np.fft.fft2(f)
+        F = fourier(f)
         # Инициализируем матрицы фильтра A и B
         # Числитель фильтра
         self.A_i = G * np.conj(F)
@@ -196,10 +197,10 @@ class Mosse:
             f = trans_frame[bbox.top() : bbox.bottom(), bbox.left() : bbox.right()]
 
             # Преобразуем отклик и изображение в частотную область
-            G = np.fft.fft2(g)
+            G = fourier(g)
             # Предобработка изображения
             f = preprocess(f)
-            F = np.fft.fft2(f)
+            F = fourier(f)
             # Обновляем матрицы фильтра
             self.A_i += G * np.conj(F)
             self.B_i += F * np.conj(F)
@@ -234,8 +235,8 @@ class Mosse:
 
         # Применяем фильтр к изображению
         # Применяем корреляцию, где f - обработанное изображение области
-        G = self.H_i * np.fft.fft2(f)
-        g = normalize(np.fft.ifft2(G))
+        G = self.H_i * fourier(f)
+        g = normalize(dft(G))
 
         # Проверка наличия NaN в g
         if g.size == 0 or np.isnan(g).any() or not np.isfinite(g).all():
@@ -264,13 +265,14 @@ class Mosse:
         if f.shape != (self.search_win_h, self.search_win_w):
             if f is None or f.size == 0:
                 return None
+            print(self.search_win_h, self.search_win_w)
             f = cv2.resize(f, (self.search_win_w, self.search_win_h))
         # Применяем фильтр к изображению
-        G = self.H_i * np.fft.fft2(f)
+        G = self.H_i * fourier(f)
 
         # Обновляем A и B с учетом нового кадра
-        self.A_i = (self.learning_rate * (G * np.conj(np.fft.fft2(f)))+ (1 - self.learning_rate) * self.A_i)
-        self.B_i = (self.learning_rate * (np.fft.fft2(f) * np.conj(np.fft.fft2(f)))+ (1 - self.learning_rate) * self.B_i)
+        self.A_i = (self.learning_rate * (G * np.conj(fourier(f)))+ (1 - self.learning_rate) * self.A_i)
+        self.B_i = (self.learning_rate * (fourier(f) * np.conj(fourier(f)))+ (1 - self.learning_rate) * self.B_i)
         # Пересчитываем фильтр H_i
         self.H_i = self.A_i / self.B_i
 
