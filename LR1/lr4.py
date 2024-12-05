@@ -19,9 +19,9 @@ def two_matrix(input):
     for size, sigma in sizes_and_sigmas:
         gaus = cv2.GaussianBlur(image, ksize=(size, size), sigmaX=sigma, sigmaY=sigma)
         # Зададим матрицы оператора Собеля, создаем матрицы для значений частных производных, длины градиента и угла градиента
-        grad_x = cv2.Sobel(gaus, cv2.CV_64F, 1, 0, ksize=3)
+        grad_x = cv2.Sobel(gaus, cv2.CV_64F, 1, 0, ksize=5)
         #cv2.imshow('x', grad_x)
-        grad_y = cv2.Sobel(gaus, cv2.CV_64F, 0, 1, ksize=3)
+        grad_y = cv2.Sobel(gaus, cv2.CV_64F, 0, 1, ksize=5)
         #cv2.imshow('y', grad_y)
         dlina_gradient = cv2.magnitude(grad_x, grad_y)
         angle_gradient = cv2.phase(grad_x, grad_y, angleInDegrees=True)
@@ -81,17 +81,10 @@ def nothing(*arg):
 
 def double_filter(input):
     image = cv2.imread(input, cv2.IMREAD_GRAYSCALE)
-
-    cv2.namedWindow("settings")
-    cv2.createTrackbar('low_threshold', 'settings', 50, 255, nothing)
-    cv2.createTrackbar('high_threshold', 'settings', 100, 255, nothing)
-    cv2.createTrackbar('strong', 'settings', 255, 255, nothing)
-    cv2.createTrackbar('weak', 'settings', 50, 255, nothing)
-
-    size, sigma = 3, 4
+    size, sigma = 5, 4
     gaus = cv2.GaussianBlur(image, ksize=(size, size), sigmaX=sigma, sigmaY=sigma)
-    grad_x = cv2.Sobel(gaus, cv2.CV_64F, 1, 0, ksize=3)
-    grad_y = cv2.Sobel(gaus, cv2.CV_64F, 0, 1, ksize=3)
+    grad_x = cv2.Sobel(gaus, cv2.CV_64F, 1, 0, ksize=5)
+    grad_y = cv2.Sobel(gaus, cv2.CV_64F, 0, 1, ksize=5)
     dlina_gradient = cv2.magnitude(grad_x, grad_y)
     angle_gradient = cv2.phase(grad_x, grad_y, angleInDegrees=True)
 
@@ -111,21 +104,18 @@ def double_filter(input):
             if dlina_gradient[i, j] >= max(neighbors):
                 suppressed[i, j] = dlina_gradient[i, j]
 
+    cv2.namedWindow("settings")
+    cv2.createTrackbar('low_threshold', 'settings', 50, 255, nothing)
+    cv2.createTrackbar('high_threshold', 'settings', 100, 255, nothing)
     while True:
         low_threshold = cv2.getTrackbarPos('low_threshold', 'settings')
         high_threshold = cv2.getTrackbarPos('high_threshold', 'settings')
-        strong = cv2.getTrackbarPos('strong', 'settings')
-        weak = cv2.getTrackbarPos('weak', 'settings')
-        result = np.zeros_like(suppressed, dtype=np.uint8)
-        strong_pixels = suppressed >= high_threshold
-        result[strong_pixels] = strong
-        weak_pixels = (suppressed >= low_threshold) & (suppressed < high_threshold)
-        result[weak_pixels] = weak
+        result = np.where(suppressed <= low_threshold, 0, np.where(suppressed >= high_threshold, 255, suppressed))
         for i in range(1, rows - 1):
             for j in range(1, cols - 1):
-                if result[i, j] == weak:
-                    if np.any(result[i - 1:i + 2, j - 1:j + 2] == strong):
-                        result[i, j] = strong
+                if result[i, j] != 0 and result[i, j] != 255:
+                    if np.any(result[i - 1:i + 1, j - 1:j + 1] == 255):
+                        result[i, j] = 255
                     else:
                         result[i, j] = 0
         cv2.imshow('Filtered Image', cv2.resize(result, (960, 540)))
