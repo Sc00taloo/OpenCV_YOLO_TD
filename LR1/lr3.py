@@ -31,6 +31,7 @@ def gaus_1_2():
 
 def normalize_kernel(kernel):
     return kernel / np.sum(kernel)
+
 def gaus_normalize():
     standard_deviation = 1
     kernel = np.ones((3, 3))
@@ -68,6 +69,7 @@ def apply_gaussian_filter(image, kernel):
                     val += image[i + k, j + l] * kernel[k +(size // 2), l + (size // 2)]
             img[i, j] = val
     return img
+
 def gaus_filter():
     standard_deviation = 2
     kernel = np.ones((5, 5))
@@ -87,7 +89,7 @@ def gaus_filter():
 
 def gaus_filter_tru():
     image = cv2.imread("photo_2023-11-23_02-28-57.jpg", cv2.IMREAD_COLOR)
-    sizes_and_sigmas = [(3, 1),(3, 2),(7, 1),(7, 2)]
+    sizes_and_sigmas = [(3, 1),(5, 2),(7, 1),(9, 2)]
     for size, sigma in sizes_and_sigmas:
         standard_deviation = sigma
         kernel = np.ones((size, size))
@@ -118,8 +120,8 @@ def opencv_gaus():
         filtered_image = apply_gaussian_filter(image, normalized_kernel)
         cv2.imshow(f'My Gaus {size}', filtered_image)
     for size, sigma in sizes_and_sigmas:
-        blurred7 = cv2.GaussianBlur(image, ksize=(size, size), sigmaX=sigma, sigmaY=sigma)
-        cv2.imshow(f'CV Gaus {size}', blurred7)
+        blurred = cv2.GaussianBlur(image, ksize=(size, size), sigmaX=sigma, sigmaY=sigma)
+        cv2.imshow(f'CV Gaus {size}', blurred)
     cv2.imshow('Original', image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
