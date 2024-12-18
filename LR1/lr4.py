@@ -13,16 +13,37 @@ def gray_gaus_conclusion(input):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+def sobel(gau):
+    gaus_x = np.zeros_like(gau, dtype=np.float64)
+    gaus_y = np.zeros_like(gau, dtype=np.float64)
+    size = 3
+    sobel_x = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+    sobel_y = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
+    for i in range(size // 2, gau.shape[0] - size // 2):
+        for j in range(size // 2, gau.shape[1] - size // 2):
+            val_x = 0
+            val_y = 0
+            for k in range(-(size // 2), size // 2 + 1):
+                for l in range(-(size // 2), size // 2 + 1):
+                    val_x += gau[i + k, j + l] * sobel_x[k +(size // 2), l + (size // 2)]
+                    val_y += gau[i + k, j + l] * sobel_y[k +(size // 2), l + (size // 2)]
+            gaus_x[i, j] = val_x
+            gaus_y[i,j] = val_y
+    return gaus_x, gaus_y
+
 def two_matrix(input):
     image = cv2.imread(input, cv2.IMREAD_GRAYSCALE)
-    sizes_and_sigmas = [(5, 3)]
+    sizes_and_sigmas = [(3, 2)]
     for size, sigma in sizes_and_sigmas:
         gaus = cv2.GaussianBlur(image, ksize=(size, size), sigmaX=sigma, sigmaY=sigma)
-        # Зададим матрицы оператора Собеля, создаем матрицы для значений частных производных, длины градиента и угла градиента
-        grad_x = cv2.Sobel(gaus, cv2.CV_64F, 1, 0, ksize=5)
+        # Зададим матрицы оператора Собеля, создаем матрицы для значений частных производных, длины градиента (амплитуды) и угла градиента (направления)
+        grad_x = cv2.Sobel(gaus, cv2.CV_64F, 1, 0)
         #cv2.imshow('x', grad_x)
-        grad_y = cv2.Sobel(gaus, cv2.CV_64F, 0, 1, ksize=5)
+        grad_y = cv2.Sobel(gaus, cv2.CV_64F, 0, 1)
         #cv2.imshow('y', grad_y)
+        # dx, dy = sobel(gaus)
+        # cv2.imshow('x_g', dx)
+        # cv2.imshow('y_g', dy)
         dlina_gradient = cv2.magnitude(grad_x, grad_y)
         angle_gradient = cv2.phase(grad_x, grad_y, angleInDegrees=True)
         print("Матрица длин градиентов:")
@@ -42,15 +63,14 @@ def not_max(input):
     sizes_and_sigmas = [(5, 3)]
     for size, sigma in sizes_and_sigmas:
         gaus = cv2.GaussianBlur(image, ksize=(size, size), sigmaX=sigma, sigmaY=sigma)
-        grad_x = cv2.Sobel(gaus, cv2.CV_64F, 1, 0, ksize=5)
-        grad_y = cv2.Sobel(gaus, cv2.CV_64F, 0, 1, ksize=5)
+        grad_x = cv2.Sobel(gaus, cv2.CV_64F, 1, 0)
+        grad_y = cv2.Sobel(gaus, cv2.CV_64F, 0, 1)
         dlina_gradient = cv2.magnitude(grad_x, grad_y)
         angle_gradient = cv2.phase(grad_x, grad_y, angleInDegrees=True)
         dlina = cv2.resize(dlina_gradient, (960, 540))
         angle = cv2.resize(angle_gradient, (960, 540))
 
         angle_new = angle_gradient % 180
-        # Инициализация матрицы результата
         suppressed = np.zeros_like(dlina_gradient, dtype=np.float64)
         rows, cols = dlina_gradient.shape
         for i in range(1, rows - 1):
@@ -83,8 +103,8 @@ def double_filter(input):
     image = cv2.imread(input, cv2.IMREAD_GRAYSCALE)
     size, sigma = 5, 4
     gaus = cv2.GaussianBlur(image, ksize=(size, size), sigmaX=sigma, sigmaY=sigma)
-    grad_x = cv2.Sobel(gaus, cv2.CV_64F, 1, 0, ksize=5)
-    grad_y = cv2.Sobel(gaus, cv2.CV_64F, 0, 1, ksize=5)
+    grad_x = cv2.Sobel(gaus, cv2.CV_64F, 1, 0)
+    grad_y = cv2.Sobel(gaus, cv2.CV_64F, 0, 1)
     dlina_gradient = cv2.magnitude(grad_x, grad_y)
     angle_gradient = cv2.phase(grad_x, grad_y, angleInDegrees=True)
 
@@ -126,5 +146,5 @@ def double_filter(input):
 if __name__ == '__main__':
     #gray_gaus_conclusion("eo6v6k01xua51.png")
     #two_matrix("eo6v6k01xua51.png")
-    #not_max("eo6v6k01xua51.png")
-    double_filter("eo6v6k01xua51.png")
+    not_max("eo6v6k01xua51.png")
+    #double_filter("eo6v6k01xua51.png")

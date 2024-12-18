@@ -71,25 +71,27 @@ def apply_gaussian_filter(image, kernel):
     return img
 
 def gaus_filter():
-    standard_deviation = 2
-    kernel = np.ones((5, 5))
-    a = b = (5 + 1) // 2
+    standard_deviation = 3
+    kernel = np.ones((7, 7))
+    a = b = (7 + 1) // 2
     # Построение матрицы свёртки
-    for i in range(5):
-        for j in range(5):
+    for i in range(7):
+        for j in range(7):
             kernel[i, j] = gauss(i, j, standard_deviation, a, b)
     normalized_kernel = normalize_kernel(kernel)
-    image = cv2.imread("photo_2023-11-23_02-28-57.jpg", cv2.IMREAD_COLOR)
+    image = cv2.imread("IMG_6192.png", cv2.IMREAD_COLOR)
     # Применение фильтра Гаусса
     filtered_image = apply_gaussian_filter(image, normalized_kernel)
+    filtered_images = apply_gaussian_filter(image, kernel)
     cv2.imshow('Gaus', filtered_image)
+    cv2.imshow('Gaussss', filtered_images)
     cv2.imshow('Original', image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 def gaus_filter_tru():
-    image = cv2.imread("photo_2023-11-23_02-28-57.jpg", cv2.IMREAD_COLOR)
-    sizes_and_sigmas = [(3, 1),(5, 2),(7, 1),(9, 2)]
+    image = cv2.imread("IMG_6192.png", cv2.IMREAD_COLOR)
+    sizes_and_sigmas = [(3, 1),(7, 1)]
     for size, sigma in sizes_and_sigmas:
         standard_deviation = sigma
         kernel = np.ones((size, size))
@@ -129,6 +131,6 @@ def opencv_gaus():
 if __name__ == '__main__':
     #gaus_1_2()
     #gaus_normalize()
-    #gaus_filter()
-    gaus_filter_tru()
+    gaus_filter()
+    #gaus_filter_tru()
     #opencv_gaus()
